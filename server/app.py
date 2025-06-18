@@ -1,24 +1,24 @@
 #!/usr/bin/env python3
 
-from flask import Flask, make_response, jsonify
+from flask import Flask, make_response
 from flask_migrate import Migrate
 
 from models import db, Earthquake
 
-# ✅ Create the Flask app first
+# ✅ Define app FIRST
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.json.compact = False
 
-# ✅ Setup DB + Migrate
+# ✅ Setup DB and migrations
 migrate = Migrate(app, db)
 db.init_app(app)
 
-# ✅ Define your routes *after* the app is created
+# ✅ Now you can use `@app.route`
 @app.route('/')
 def index():
-    return make_response({"message": "Flask SQLAlchemy Lab 1"}, 200)
+    return make_response({'message': 'Flask SQLAlchemy Lab 1'}, 200)
 
 
 @app.route('/earthquakes/<int:id>')

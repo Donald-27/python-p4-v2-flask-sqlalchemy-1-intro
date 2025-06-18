@@ -1,14 +1,17 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import MetaData
+from sqlalchemy_serializer import SerializerMixin
 
-# Create metadata and pass it to SQLAlchemy
 metadata = MetaData()
 db = SQLAlchemy(metadata=metadata)
 
-# Define the Pet model
-class Pet(db.Model):
-    __tablename__ = 'pets'
+class Earthquake(db.Model, SerializerMixin):
+    __tablename__ = 'earthquakes'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
-    species = db.Column(db.String)
+    magnitude = db.Column(db.Float)
+    location = db.Column(db.String)
+    year = db.Column(db.Integer)
+
+    def __repr__(self):
+        return f"<Earthquake {self.id}, {self.magnitude}, {self.location}, {self.year}>"
