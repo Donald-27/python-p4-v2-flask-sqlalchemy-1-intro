@@ -2,20 +2,19 @@
 
 from flask import Flask, make_response
 from flask_migrate import Migrate
-
 from models import db, Earthquake
 
-# ✅ Define app FIRST
+# ✅ Step 1: Create the app FIRST
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.json.compact = False
 
-# ✅ Setup DB and migrations
+# ✅ Step 2: Initialize extensions
 migrate = Migrate(app, db)
 db.init_app(app)
 
-# ✅ Now you can use `@app.route`
+# ✅ Step 3: Define your routes AFTER app is created
 @app.route('/')
 def index():
     return make_response({'message': 'Flask SQLAlchemy Lab 1'}, 200)
@@ -26,17 +25,16 @@ def get_earthquake_by_id(id):
     quake = Earthquake.query.filter_by(id=id).first()
     if quake:
         return make_response(quake.to_dict(), 200)
-    return make_response({"message": f"Earthquake {id} not found."}, 404)
+    return make_response({'message': f'Earthquake {id} not found.'}, 404)
 
 
 @app.route('/earthquakes/magnitude/<float:magnitude>')
 def get_earthquakes_by_magnitude(magnitude):
     quakes = Earthquake.query.filter(Earthquake.magnitude >= magnitude).all()
     return make_response({
-        "count": len(quakes),
-        "quakes": [q.to_dict() for q in quakes]
+        'count': len(quakes),
+        'quakes': [q.to_dict() for q in quakes]
     }, 200)
-
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
